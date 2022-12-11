@@ -14,6 +14,9 @@ class MenuController extends GetxController {
   var _noResult = false.obs;
   var _showContentId = "-1".obs;
 
+  String? postCategory;
+  String? newCategory;
+
   int get selectedIndex => _selectedIndex.value;
   String get selectedTopic => _selectedTopic.value;
   int get pageIndex => _pageIndex.value;

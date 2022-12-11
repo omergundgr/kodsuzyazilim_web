@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kodulartools/services/post_service.dart';
 
 import '../../constants.dart';
 import '../../controllers/MenuController.dart';
@@ -31,7 +32,16 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void initState() {
-    MainScreen.scrollCtrl.addListener(() => _removeOverlays());
+    MainScreen.scrollCtrl.addListener(() {
+      if (MainScreen.scrollCtrl.position.atEdge) {
+        bool isBottom = MainScreen.scrollCtrl.position.pixels != 0;
+        if (isBottom) {
+          GetterService().getPosts(category: _menuCtrl.newCategory);
+        }
+
+        _removeOverlays();
+      }
+    });
     super.initState();
   }
 

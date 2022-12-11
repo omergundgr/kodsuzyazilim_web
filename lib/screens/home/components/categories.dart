@@ -36,6 +36,7 @@ class Categories extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 4),
       child: TextButton(
         onPressed: () {
+          _menuCtrl.newCategory = title;
           _menuCtrl.setShowContentId(-1);
           _menuCtrl.setMenuIndex(0);
           _menuCtrl.setSelectedPostCategory(title);

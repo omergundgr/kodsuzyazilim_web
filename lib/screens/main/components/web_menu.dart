@@ -22,10 +22,13 @@ class WebMenu extends StatelessWidget {
               _controller.setSelectedPostCategory("");
               _controller.setMenuIndex(index);
               if (index == 0) {
+                _controller.newCategory = null;
                 GetterService().getPosts();
               } else if (index == 2) {
+                _controller.newCategory = "extension";
                 GetterService().getPosts(category: "extension");
               } else if (index == 3) {
+                _controller.newCategory = "schema";
                 GetterService().getPosts(category: "schema");
               }
             },

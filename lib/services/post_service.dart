@@ -27,9 +27,12 @@ class PublishService {
         : postType == "Şema Paylaş"
             ? "schema"
             : "blog";
-    if (type == "extension") categories = ["Eklenti Dökümantasyon, extension"];
-    if (postType != "Blog Yaz") categories = [type];
-    final response = await _dio.post(
+
+    if (type != "blog") categories = [type];
+    if (type == "extension") {
+      categories = ["Eklenti Dökümantasyon", "extension"];
+    }
+    await _dio.post(
         "$kHostAdress/post?userMail=$userMail&body=$post&title=$title&categories=${categories.join(",")}&type=$type");
   }
 }
@@ -85,17 +88,34 @@ class GetterService {
   final MenuController _menuCtrl = Get.find();
 
   Future getPosts({String? category}) async {
-    _menuCtrl.setPostOffset(0);
-    _menuCtrl.clearPostList();
+    print("${_menuCtrl.postOffset} : OFFSET");
+    print("${_menuCtrl.noResult} : RESULT");
+
+    if (_menuCtrl.postCategory != _menuCtrl.newCategory) {
+      print("old: ${_menuCtrl.postCategory} new: ${_menuCtrl.newCategory}");
+
+      _menuCtrl.postCategory = _menuCtrl.newCategory;
+      _menuCtrl.clearPostList();
+      _menuCtrl.setPostOffset(0);
+      _menuCtrl.setNoResult(false);
+    }
+
+    if (_menuCtrl.postOffset != 0 && _menuCtrl.noResult) {
+      print("bitti");
+      return;
+    }
+
     _menuCtrl.setPostLoading(true);
-    _menuCtrl.setNoResult(false);
+
     final result = await _dio.get(
         "$kHostAdress/getPosts/5/${_menuCtrl.postOffset}${category != null ? "?category=$category" : ""}");
     if (result.data != "ERROR") {
       final list = result.data as List;
       final List<Post> postList = list.map((e) => Post.fromJson(e)).toList();
+
       _menuCtrl.addToPostList(postList);
-      _menuCtrl.setPostOffset(_menuCtrl.postOffset + 5);
+      print(
+          "${postList.length} tane eklendi mevcut offset : ${_menuCtrl.postOffset}");
     } else {
       _menuCtrl.setNoResult(true);
     }
